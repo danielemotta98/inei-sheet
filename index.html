@@ -1,0 +1,628 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#140e09">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="In'ei">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23140e09'/%3E%3Ccircle cx='32' cy='32' r='17' fill='none' stroke='%23d8a84a' stroke-width='4'/%3E%3Cpath d='M32 15v34' stroke='%23d8a84a' stroke-width='4'/%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>In'ei Amenokage · Shadow Sorcerer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#140e09;--card1:#2b1e12;--card2:#1e150d;--gold:#d8a84a;--gold-hi:#f2cd7e;--text:#ecdfc7;--mut:#a89578;--line:#5e4527;--red:#d4675a;--green:#72c490;--btn1:#e6b95c;--btn2:#b98729;--btntext:#1b1208;--grid:rgba(216,168,74,.05);--dock:#1a110a}
+html[data-theme=light]{--bg:#efe3c9;--card1:#fbf3e0;--card2:#f3e8cc;--gold:#9a6a16;--gold-hi:#7a5008;--text:#2c2013;--mut:#6f5d43;--line:#c9b185;--red:#b1362a;--green:#2f7d4c;--btn1:#d9a23c;--btn2:#b9801f;--btntext:#1f1406;--grid:rgba(90,60,10,.06);--dock:#f6ecd2}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--text);font:15px/1.4 Inter,system-ui,"Segoe UI",sans-serif;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:28px 28px;min-height:100vh;-webkit-text-size-adjust:100%;touch-action:manipulation;-webkit-tap-highlight-color:transparent;overscroll-behavior-y:none}
+#wrap{max-width:820px;margin:0 auto;padding:14px 14px calc(190px + env(safe-area-inset-bottom))}
+body.typing #dock,body.typing nav{display:none}
+body.typing #wrap{padding-bottom:40vh}
+header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:12px}
+h1{font:400 28px/1.1 "IM Fell English SC",Georgia,serif;margin:0;letter-spacing:.5px}
+.sub{color:var(--mut);margin-top:4px;font-size:14px}
+.iconbtn{border:1px solid var(--gold);background:linear-gradient(var(--btn1),var(--btn2));color:var(--btntext);width:38px;height:38px;border-radius:8px;font-size:18px;cursor:pointer}
+.iconbtn.ghost{background:transparent;color:var(--gold)}
+.card,.tile{background:linear-gradient(var(--card1),var(--card2));border:1px solid var(--line);border-radius:10px;position:relative}
+.card{padding:12px 14px;margin:0 0 12px}
+.card::before,.card::after,.tile::before,.tile::after{content:"";position:absolute;width:4px;height:4px;border-radius:50%;background:var(--gold);opacity:.7}
+.card::before,.tile::before{left:5px;top:5px}.card::after,.tile::after{right:5px;bottom:5px}
+h2{font:400 18px "IM Fell English SC",Georgia,serif;color:var(--gold);margin:0 0 8px;letter-spacing:.6px}
+h3{font:400 16px "IM Fell English SC",Georgia,serif;color:var(--gold);margin:0 0 8px}
+.hint{color:var(--mut);font-size:13px;margin:0 0 8px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:8px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.tile{padding:10px 6px 8px;text-align:center;min-height:64px}
+.tile.plus{cursor:pointer}.tile.plus .lbl::after{content:" +";color:var(--gold)}
+.lbl{font-size:12.5px;color:var(--mut)}
+.val{font-size:22px;font-weight:600;margin-top:2px}
+.tipc{font-size:13.5px;color:var(--text);border-style:dashed}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-top:1px solid rgba(160,120,60,.25)}
+.row:first-of-type{border-top:0}
+.row .t{font-weight:500}.row .s{color:var(--mut);font-size:12.5px}
+.pips{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.pip{width:36px;height:36px;border-radius:50%;border:2px solid var(--gold);background:transparent;cursor:pointer;padding:0}
+.pip.on{background:radial-gradient(circle at 35% 30%,var(--gold-hi),var(--gold))}
+.btn{min-height:42px;border:1px solid var(--gold);background:transparent;color:var(--text);border-radius:8px;padding:7px 12px;font:500 14px Inter,sans-serif;cursor:pointer}
+.btn.gold{background:linear-gradient(var(--btn1),var(--btn2));color:var(--btntext);border-color:var(--gold)}
+.btn.danger{border-color:var(--red);color:var(--red)}
+.btn.sm{padding:4px 11px;font-size:13.5px;min-height:38px}
+.btn:disabled{opacity:.4;cursor:default}
+.btn.on{background:var(--gold);color:var(--btntext)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);border-radius:999px;padding:2px 10px;font-size:13px;background:rgba(0,0,0,.15)}
+.chip.red{border-color:var(--red);color:var(--red)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px 14px}
+.saves{display:grid;grid-template-columns:repeat(3,1fr);gap:6px 12px}
+.save{display:flex;justify-content:space-between;border-bottom:1px dotted var(--line);padding:3px 0}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;border:1.5px solid var(--gold);margin-right:6px}
+.dot.f{background:var(--gold)}
+input,select,textarea{background:rgba(0,0,0,.18);color:var(--text);border:1px solid var(--line);border-radius:6px;padding:8px 10px;font:16px Inter,sans-serif;width:100%;min-height:42px}
+html[data-theme=light] input,html[data-theme=light] select,html[data-theme=light] textarea{background:rgba(255,255,255,.6)}
+input[type=checkbox]{width:26px;height:26px;min-height:0;accent-color:var(--gold)}
+textarea{min-height:90px;resize:vertical}
+label{font-size:13px;color:var(--mut);display:block;margin:6px 0 2px}
+table{width:100%;border-collapse:collapse}
+th,td{padding:4px 5px;text-align:center;font-size:14px}
+th{color:var(--mut);font-weight:500;font-size:12.5px}
+td.l,th.l{text-align:left}
+td input{text-align:center;padding:4px}
+details.spell{border-top:1px solid rgba(160,120,60,.25);padding:6px 0}
+details.spell:first-of-type{border-top:0}
+summary{cursor:pointer;display:flex;gap:8px;align-items:baseline;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"▸";color:var(--gold)}
+details[open]>summary::before{content:"▾"}
+.sn{font-weight:600}.sm{color:var(--mut);font-size:12.5px;margin-left:auto}
+.tag{font-style:normal;border:1px solid var(--gold);color:var(--gold);border-radius:4px;padding:0 5px;font-size:11px}
+.sbody{padding:6px 0 4px 18px;font-size:14px}
+.sbody p{margin:6px 0}
+.srow{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.meta{color:var(--mut);font-size:13px}
+.feat{border-top:1px solid rgba(160,120,60,.25);padding:8px 0}
+.feat:first-of-type{border-top:0}
+.feat.locked{opacity:.5}
+.feat .h{display:flex;gap:8px;align-items:baseline;justify-content:space-between}
+.feat b{font-weight:600}
+.warn{border-color:var(--red)}
+.warn li{color:var(--red)}
+ul{margin:4px 0 4px 18px;padding:0}
+#dock{position:fixed;left:0;right:0;bottom:calc(62px + env(safe-area-inset-bottom));display:flex;justify-content:center;padding:0 10px;z-index:5;pointer-events:none}
+#dock .in{pointer-events:auto;width:100%;max-width:560px;background:var(--dock);border:1px solid var(--line);border-radius:10px;padding:8px 10px;display:flex;align-items:center;gap:10px;box-shadow:0 4px 18px rgba(0,0,0,.5)}
+#dock .mid{flex:1;text-align:center}
+#dock .hpn{font-size:26px;font-weight:600}
+#dock .hpn small{font-size:12px;color:var(--mut);font-weight:400}
+.bar{height:5px;border-radius:3px;background:rgba(0,0,0,.35);margin-top:4px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--green)}
+nav{position:fixed;left:0;right:0;bottom:0;background:var(--dock);border-top:1px solid var(--line);display:flex;justify-content:center;z-index:6;padding-bottom:env(safe-area-inset-bottom)}
+nav .in{display:flex;width:100%;max-width:820px}
+nav button{flex:1;background:none;border:0;color:var(--mut);padding:7px 2px 6px;font:500 12.5px Inter,sans-serif;cursor:pointer;border-top:2px solid transparent}
+nav button b{display:block;font-size:18px;line-height:1.1;font-weight:400}
+nav button.on{color:var(--gold-hi);border-top-color:var(--red)}
+#modal{display:none}
+#modal.open{display:block}
+#modal .mb{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:20}
+#modal .mc{position:fixed;z-index:21;left:50%;top:6vh;transform:translateX(-50%);width:min(520px,94vw);max-height:86vh;overflow:auto;margin:0}
+.mbtns{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-top:12px}
+.mbtns .btn{flex:0 0 auto}
+.optlist{display:flex;flex-direction:column;gap:6px}
+#toast{position:fixed;left:50%;bottom:calc(150px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--gold);color:var(--btntext);padding:8px 14px;border-radius:8px;z-index:30;display:none;max-width:90vw;font-weight:500;text-align:center}
+.banner{background:rgba(212,103,90,.15);border:1px solid var(--red);color:var(--red);border-radius:8px;padding:6px 10px;margin-bottom:10px;font-size:13px}
+summary{padding:6px 0;min-height:36px;align-items:center}
+.mbtns .btn{flex:1 1 auto;min-height:44px}
+@media(max-width:560px){#modal .mc{top:auto;bottom:0;left:0;transform:none;width:100%;max-height:88vh;border-radius:16px 16px 0 0;padding-bottom:calc(14px + env(safe-area-inset-bottom))}.mbtns{flex-direction:column-reverse}.mbtns .btn{width:100%}#dock .in{padding:8px}#dock .btn{padding:6px 10px}.grid4{gap:6px}.grid3{gap:6px}.tile{min-height:54px;padding:7px 2px 6px}.lbl{font-size:11.5px}.val{font-size:20px}.card{padding:10px 12px;margin-bottom:10px}#wrap{padding-left:10px;padding-right:10px}h1{font-size:22px}.saves{grid-template-columns:repeat(2,1fr)}.two{grid-template-columns:1fr}h1{font-size:23px}}
+</style>
+</head>
+<body>
+<div id="wrap">
+  <header>
+    <div><h1 id="hname"></h1><div class="sub" id="hsub"></div></div>
+    <button class="iconbtn ghost" id="themeBtn" title="Light / dark">☾</button>
+  </header>
+  <div id="banner"></div>
+  <main id="app"></main>
+</div>
+<div id="dock"><div class="in" id="dockin"></div></div>
+<nav><div class="in" id="tabs"></div></nav>
+<div id="modal"></div>
+<div id="toast"></div>
+<input type="file" id="importFile" accept="application/json" style="display:none">
+
+<script>
+(function(){
+'use strict';
+/* ============ utils ============ */
+const KEY='inei-shadow-sheet.v1';
+let storageOK=true;
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=n=>(n>=0?'+':'−')+Math.abs(n);
+const num=v=>{v=parseInt(v,10);return isNaN(v)?0:v};
+const clone=o=>JSON.parse(JSON.stringify(o));
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const roll=n=>1+Math.floor(Math.random()*n);
+const isObj=o=>o&&typeof o==='object'&&!Array.isArray(o);
+function merge(base,over){for(const k in over){if(isObj(over[k])&&isObj(base[k]))merge(base[k],over[k]);else base[k]=over[k];}return base;}
+
+/* ============ rules data (D&D 5e 2014 + Xanathar's) ============ */
+const ABIL=['str','dex','con','int','wis','cha'];
+const ABN={str:'STR',dex:'DEX',con:'CON',int:'INT',wis:'WIS',cha:'CHA'};
+const ABF={str:'Strength',dex:'Dexterity',con:'Constitution',int:'Intelligence',wis:'Wisdom',cha:'Charisma'};
+const SKILLS=[['acrobatics','Acrobatics','dex'],['animal','Animal Handling','wis'],['arcana','Arcana','int'],['athletics','Athletics','str'],['deception','Deception','cha'],['history','History','int'],['insight','Insight','wis'],['intimidation','Intimidation','cha'],['investigation','Investigation','int'],['medicine','Medicine','wis'],['nature','Nature','int'],['perception','Perception','wis'],['performance','Performance','cha'],['persuasion','Persuasion','cha'],['religion','Religion','int'],['sleight','Sleight of Hand','dex'],['stealth','Stealth','dex'],['survival','Survival','wis']];
+const CONDITIONS=['Blinded','Charmed','Deafened','Exhaustion','Frightened','Grappled','Incapacitated','Invisible','Paralyzed','Petrified','Poisoned','Prone','Restrained','Stunned','Unconscious'];
+const SORC_SLOTS=[null,[2],[3],[4,2],[4,3],[4,3,2],[4,3,3],[4,3,3,1],[4,3,3,2],[4,3,3,3,1],[4,3,3,3,2],[4,3,3,3,2,1],[4,3,3,3,2,1],[4,3,3,3,2,1,1],[4,3,3,3,2,1,1],[4,3,3,3,2,1,1,1],[4,3,3,3,2,1,1,1],[4,3,3,3,2,1,1,1,1],[4,3,3,3,3,1,1,1,1],[4,3,3,3,3,2,1,1,1],[4,3,3,3,3,2,2,1,1]];
+const SORC_CANT=l=>l>=10?6:l>=4?5:l>=1?4:0;
+const SORC_KNOWN=[0,2,3,4,5,6,7,8,9,10,11,12,12,13,13,14,14,15,15,15,15];
+const LOCK_CANT=l=>l>=10?4:l>=4?3:l>=1?2:0;
+const LOCK_KNOWN=[0,2,3,4,5,6,7,8,9,10,10,11,11,12,12,13,13,14,14,15,15];
+const PACT=l=>l<1?null:l===1?{n:1,l:1}:l<=2?{n:2,l:1}:l<=4?{n:2,l:2}:l<=6?{n:2,l:3}:l<=8?{n:2,l:4}:l<=10?{n:2,l:5}:l<=16?{n:3,l:5}:{n:4,l:5};
+const FLEX_COST={1:2,2:3,3:5,4:6,5:7};
+const CLS={S:{name:'Sorcerer',die:6,sub:'Shadow Magic'},W:{name:'Warlock',die:8,sub:'Hexblade'}};
+const ARMOR=[
+ {id:'none',name:'No armor',base:10,dex:'full',cat:'none'},
+ {id:'padded',name:'Padded (11 + DEX)',base:11,dex:'full',cat:'light'},
+ {id:'leather',name:'Leather (11 + DEX)',base:11,dex:'full',cat:'light'},
+ {id:'studded',name:'Studded leather (12 + DEX)',base:12,dex:'full',cat:'light'},
+ {id:'hide',name:'Hide (12 + DEX, max 2)',base:12,dex:'max2',cat:'medium'},
+ {id:'chainshirt',name:'Chain shirt (13 + DEX, max 2)',base:13,dex:'max2',cat:'medium'},
+ {id:'scale',name:'Scale mail (14 + DEX, max 2)',base:14,dex:'max2',cat:'medium'},
+ {id:'breastplate',name:'Breastplate (14 + DEX, max 2)',base:14,dex:'max2',cat:'medium'},
+ {id:'halfplate',name:'Half plate (15 + DEX, max 2)',base:15,dex:'max2',cat:'medium'},
+ {id:'ring',name:'Ring mail (14)',base:14,dex:'none',cat:'heavy'},
+ {id:'chain',name:'Chain mail (16)',base:16,dex:'none',cat:'heavy'},
+ {id:'splint',name:'Splint (17)',base:17,dex:'none',cat:'heavy'},
+ {id:'plate',name:'Plate (18)',base:18,dex:'none',cat:'heavy'}];
+const WPRESET={
+ dagger:{name:'Dagger',dmg:'1d4',type:'piercing',kind:'melee',finesse:true,twoH:false,cat:'simple'},
+ dart:{name:'Dart',dmg:'1d4',type:'piercing',kind:'ranged',finesse:false,twoH:false,cat:'simple'},
+ lightcrossbow:{name:'Light crossbow',dmg:'1d8',type:'piercing',kind:'ranged',finesse:false,twoH:true,cat:'simple'},
+ quarterstaff:{name:'Quarterstaff',dmg:'1d6',type:'bludgeoning',kind:'melee',finesse:false,twoH:false,cat:'simple'},
+ sling:{name:'Sling',dmg:'1d4',type:'bludgeoning',kind:'ranged',finesse:false,twoH:false,cat:'simple'},
+ shortsword:{name:'Shortsword',dmg:'1d6',type:'piercing',kind:'melee',finesse:true,twoH:false,cat:'martial'},
+ longsword:{name:'Longsword',dmg:'1d8',type:'slashing',kind:'melee',finesse:false,twoH:false,cat:'martial'},
+ rapier:{name:'Rapier',dmg:'1d8',type:'piercing',kind:'melee',finesse:true,twoH:false,cat:'martial'},
+ scimitar:{name:'Scimitar',dmg:'1d6',type:'slashing',kind:'melee',finesse:true,twoH:false,cat:'martial'},
+ shortbow:{name:'Shortbow',dmg:'1d6',type:'piercing',kind:'ranged',finesse:false,twoH:true,cat:'martial'},
+ longbow:{name:'Longbow',dmg:'1d8',type:'piercing',kind:'ranged',finesse:false,twoH:true,cat:'martial'},
+ greatsword:{name:'Greatsword',dmg:'2d6',type:'slashing',kind:'melee',finesse:false,twoH:true,cat:'martial'}};
+const SORC_WEAPONS=['dagger','dart','sling','quarterstaff','lightcrossbow'];
+const ELF_WEAPONS=['longsword','shortsword','shortbow','longbow'];
+const HEX_EXPANDED=[[1,'Shield, Wrathful Smite'],[2,'Blur, Branding Smite'],[3,'Blink, Elemental Weapon'],[4,'Phantasmal Killer, Staggering Smite'],[5,'Banishing Smite, Cone of Cold']];
+
+const FEATURES=[
+ {cls:'R',lvl:0,name:'Ability Score Increase',text:'Default +2 DEX, +1 INT. You can change these values freely in the Race column of the Character tab.'},
+ {cls:'R',lvl:0,name:'Darkvision',text:'60 ft. Eyes of the Dark (Shadow Magic) raises it to 120 ft.'},
+ {cls:'R',lvl:0,name:'Keen Senses',text:'Proficiency in Perception.'},
+ {cls:'R',lvl:0,name:'Fey Ancestry',text:'Advantage on saves against being charmed; magic cannot put you to sleep.'},
+ {cls:'R',lvl:0,name:'Trance',text:'4 hours of meditation replace 8 hours of sleep for a long rest.'},
+ {cls:'R',lvl:0,name:'Elf Weapon Training',text:'Proficiency with longsword, shortsword, shortbow, longbow.'},
+ {cls:'R',lvl:0,name:'High Elf Cantrip',text:'One wizard cantrip of your choice; Intelligence is its spellcasting ability.'},
+ {cls:'R',lvl:0,name:'Extra Language',text:'One extra language of your choice.'},
+ {cls:'S',lvl:1,name:'Spellcasting',text:'Charisma is your spellcasting ability. You cast from an arcane focus. You know a fixed number of spells and can swap one on each Sorcerer level-up.'},
+ {cls:'S',lvl:1,name:'Eyes of the Dark',text:'Darkvision 120 ft. At Sorcerer 3 you also know Darkness and can cast it by spending 2 sorcery points; you can see through the darkness it creates.'},
+ {cls:'S',lvl:1,name:'Strength of the Grave',text:'When damage would reduce you to 0 HP (not radiant, not a critical hit), make a CHA save, DC 5 + the damage taken. On a success you drop to 1 HP instead. Once per long rest.',use:'grave',reset:'Long rest'},
+ {cls:'S',lvl:2,name:'Font of Magic',text:'Sorcery points equal to your Sorcerer level. Flexible Casting: spend points to create a slot (L1 2, L2 3, L3 5, L4 6, L5 7 points) or burn a slot to gain points equal to its level. Created slots vanish on a long rest.'},
+ {cls:'S',lvl:3,name:'Metamagic',text:'Choose 2 Metamagic options (3 more at Sorcerer 10 and 17: total 3, then 4). Each costs sorcery points as listed in its description. Record your picks in the Character tab.'},
+ {cls:'S',lvl:4,name:'Ability Score Improvement',text:'At Sorcerer 4, 8, 12, 16 and 19: +2 to one score or +1 to two scores (or a feat). Add them in the "Other" column of the Character tab.'},
+ {cls:'S',lvl:6,name:'Hound of Ill Omen',text:'Bonus action, 3 sorcery points: summon a spectral hound to harass one creature you can see within 120 ft. It uses dire wolf statistics with the changes in Xanathar’s Guide; check the book for the full text.'},
+ {cls:'S',lvl:14,name:'Shadow Walk',text:'Bonus action: while in dim light or darkness, teleport up to 120 ft to an unoccupied space you can see that is also in dim light or darkness.'},
+ {cls:'S',lvl:18,name:'Umbral Form',text:'Bonus action, 6 sorcery points: become a shadowy form for 1 minute, gaining resistance to all damage except force and radiant (see the book for the details).'},
+ {cls:'S',lvl:20,name:'Sorcerous Restoration',text:'On a short rest you regain 4 expended sorcery points.'},
+ {cls:'W',lvl:1,name:'Hexblade’s Curse',text:'Bonus action: curse a creature you can see within 30 ft for 1 minute. While it lasts: +proficiency bonus to your damage rolls against it; your weapon attacks against it crit on 19–20; if it dies you regain HP equal to your Warlock level + CHA modifier (min 1). Once per short or long rest.',use:'curse',reset:'Short / long rest'},
+ {cls:'W',lvl:1,name:'Hex Warrior',text:'Proficiency with medium armor, shields and martial weapons. At the end of a long rest, touch one non-two-handed weapon you are proficient with: you use CHA instead of STR/DEX for its attack and damage rolls. Set the bound weapon in the Gear tab.'},
+ {cls:'W',lvl:1,name:'Pact Magic',text:'Warlock slots recharge on a short or long rest. You can cast any spell you know with any slot (Pact or Sorcerer), and you can burn a Pact slot for sorcery points.'},
+ {cls:'W',lvl:1,name:'Expanded Spell List',text:'Hexblade adds spells to the Warlock list you can learn: see the Spells tab.'},
+ {cls:'W',lvl:1,name:'Multiclass proficiencies',text:'Light armor and simple weapons (plus the Hex Warrior proficiencies above).'}
+];
+
+/* ============ state ============ */
+const DEFAULT={
+ v:2,theme:'dark',tab:'combat',
+ feats:[{id:'f1',name:'War Caster',text:'Advantage on Constitution saves to keep concentrating when you take damage. You can perform somatic components even with weapons or a shield in one or both hands. When a hostile creature’s movement provokes an opportunity attack from you, you can use your reaction to cast a spell at it instead (casting time 1 action, targeting only that creature).'}],
+ name:"In'ei Amenokage",background:'',alignment:'',speed:30,languages:'Common, Elvish, +1 of your choice',tools:'',metamagic:'',notes:'',
+ levels:[{cls:'S',roll:null}],
+ abilities:{str:{base:10,bonus:0},dex:{base:10,bonus:0},con:{base:10,bonus:0},int:{base:10,bonus:0},wis:{base:10,bonus:0},cha:{base:10,bonus:0}},
+ racial:{str:0,dex:2,con:0,int:1,wis:0,cha:0},
+ skills:{perception:1},
+ hp:null,temp:0,hpBonus:0,death:{s:0,f:0},conditions:[],conc:'',
+ used:{slots:{},pact:0,sp:0,curse:0,grave:0,hd6:0,hd8:0},extra:{},
+ armor:'none',shield:false,acBonus:0,mageArmor:false,shieldSpell:false,cursed:false,
+ weapons:[{id:'w1',preset:'dagger',name:'Dagger',dmg:'1d4',type:'piercing',kind:'melee',finesse:true,twoH:false,cat:'simple',bonus:0,hex:false,profManual:true}],
+ inventory:[{name:'Dagger',qty:2}],coins:{cp:0,sp:0,ep:0,gp:0,pp:0},
+ spells:[
+  {id:'s1',name:'Booming Blade',level:0,src:'sorc',school:'Evocation',cast:'1 action',range:'Self (5 ft radius)',comp:'M (a melee weapon worth at least 1 sp)',dur:'1 round',dyn:'bb',conc:false,text:'Make a melee weapon attack against one creature within reach. On a hit, the target takes the attack’s normal effects and is sheathed in booming energy until the start of your next turn. If it willingly moves 5 ft or more before then, it takes thunder damage and the spell ends.'},
+  {id:'s2',name:'Dark Dive (Tuffo Oscuro)',level:0,src:'elf',school:'Custom (DM)',cast:'1 action',range:'Self',comp:'S',dur:'',dyn:'dd',conc:false,text:'Immerse your consciousness in the darkness. Your next weapon attack gains 15 ft. of range and teleports you to the target, into its shadow. At level 5 the attack’s damage increases by 1d8 psychic and it gains 5 ft. of range. At level 11 the damage increases by a further 1d8 and the range by a further 5 ft.'},
+  {id:'s3',name:'Shield',level:1,src:'sorc',school:'Abjuration',cast:'1 reaction (hit by an attack, or targeted by Magic Missile)',range:'Self',comp:'V, S',dur:'1 round',fx:'shield',conc:false,text:'+5 AC until the start of your next turn, including against the triggering attack. You take no damage from Magic Missile.'},
+  {id:'s4',name:'Mage Armor',level:1,src:'sorc',school:'Abjuration',cast:'1 action',range:'Touch',comp:'V, S, M (a piece of cured leather)',dur:'8 hours',fx:'mage',conc:false,text:'A willing creature not wearing armor has a base AC of 13 + its DEX modifier until the spell ends. It ends if the target dons armor.'},
+  {id:'s5',name:'Green-Flame Blade',level:0,src:'sorc',school:'Evocation',cast:'1 action',range:'Self (5 ft radius)',comp:'M (a melee weapon worth at least 1 sp)',dur:'Instantaneous',dyn:'gfb',conc:false,text:'Make a melee weapon attack against one creature within reach. On a hit, the target suffers the attack’s normal effects and green fire leaps to a different creature of your choice within 5 ft of the target, which takes fire damage equal to your spellcasting ability modifier.'},
+  {id:'s6',name:'Minor Illusion',level:0,src:'sorc',school:'Illusion',cast:'1 action',range:'30 ft',comp:'S, M (a bit of fleece)',dur:'1 minute',conc:false,text:'Create a sound or an image of an object within range. A sound can be anything from a whisper to a scream. An image must fit in a 5-ft cube and has no sound, light, smell or other sensory effect; if you create both, they must be in the same space. Physical interaction reveals it as an illusion, and a creature can spend an action to make an Investigation check against your spell save DC to see through it.'},
+  {id:'s7',name:'Gust',level:0,src:'sorc',school:'Transmutation',cast:'1 action',range:'30 ft',comp:'V, S',dur:'Instantaneous',conc:false,text:'Choose one: a Medium or smaller creature must succeed on a Strength save or be pushed 5 ft away from you; or you move an unattended object of 5 lb or less up to 10 ft away; or you create a harmless sensory effect with air (rustling leaves, a slamming shutter, a flapping cloak).'}
+ ]
+};
+let S=load(),C={},UI={tip:null,open:{}},MODAL=null;
+function migrate(s){
+ if((s.v||1)<2){
+  DEFAULT.spells.forEach(sp=>{if(!s.spells.some(x=>x.name===sp.name))s.spells.push(clone(sp));});
+  const dd=s.spells.find(x=>x.dyn==='dd');if(dd)dd.src='elf';
+  s.v=2;
+ }
+ return s;
+}
+function load(){try{const r=localStorage.getItem(KEY);if(r)return migrate(merge(clone(DEFAULT),JSON.parse(r)));}catch(e){storageOK=false;}return clone(DEFAULT);}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){storageOK=false;}}
+
+/* ============ derived ============ */
+function recalc(){
+ const L=S.levels.length;const cnt=c=>S.levels.filter(l=>l.cls===c).length;
+ const sorc=cnt('S'),lock=cnt('W');
+ const pb=2+Math.floor((Math.max(L,1)-1)/4);
+ const sc={},md={};
+ ABIL.forEach(a=>{sc[a]=num(S.abilities[a].base)+num(S.racial[a])+num(S.abilities[a].bonus);md[a]=Math.floor((sc[a]-10)/2);});
+ const tier=L>=17?4:L>=11?3:L>=5?2:1;
+ // HP
+ let hp=0;const hpParts=[];
+ S.levels.forEach((lv,i)=>{const d=CLS[lv.cls].die;let base,how;
+  if(i===0){base=d;how='max';}else if(lv.roll!=null&&lv.roll!==''){base=num(lv.roll);how='rolled';}else{base=d/2+1;how='avg';}
+  const g=Math.max(1,base+md.con);hp+=g;hpParts.push(`L${i+1} ${CLS[lv.cls].name} d${d}: ${base} (${how}) ${fmt(md.con)} CON = ${g}`);});
+ const bonus=num(S.hpBonus);if(bonus)hpParts.push(`Other HP bonus ${fmt(bonus)}`);
+ const maxHP=hp+bonus;
+ if(S.hp==null)S.hp=maxHP;S.hp=Math.min(Math.max(0,S.hp),maxHP);
+ // AC
+ const ac=acCalc(md,lock);
+ const dc=8+pb+md.cha,atk=pb+md.cha;
+ const slots=sorc>=1?SORC_SLOTS[Math.min(sorc,20)]:[];
+ C={L,sorc,lock,pb,sc,md,tier,maxHP,hpParts,ac,dc,atk,slots,pact:PACT(lock),spMax:sorc>=2?sorc:0,
+  dcElf:8+pb+md.int,atkElf:pb+md.int};
+}
+function acCalc(md,lock){
+ const a=ARMOR.find(x=>x.id===S.armor)||ARMOR[0];const parts=[];let v,warn='';
+ if(a.id==='none'){
+  if(S.mageArmor){v=13+md.dex;parts.push('Mage Armor 13',`DEX ${fmt(md.dex)}`);}
+  else{v=10+md.dex;parts.push('Unarmored 10',`DEX ${fmt(md.dex)}`);}
+ }else{
+  let d=a.dex==='full'?md.dex:a.dex==='max2'?Math.min(md.dex,2):0;
+  v=a.base+d;parts.push(`${a.name.split(' (')[0]} ${a.base}`);if(a.dex!=='none')parts.push(`DEX ${fmt(d)}${a.dex==='max2'?' (max 2)':''}`);
+  const prof=a.cat==='light'||a.cat==='medium'?lock>=1:false;
+  if(!prof)warn='Not proficient in this armor: no spellcasting, disadvantage on STR/DEX checks, saves and attacks.';
+  if(S.mageArmor)parts.push('(Mage Armor has no effect while armored)');
+ }
+ if(S.shield){v+=2;parts.push('Shield +2');if(lock<1&&!warn)warn='Not proficient with shields.';}
+ if(S.shieldSpell){v+=5;parts.push('Shield spell +5');}
+ if(num(S.acBonus)){v+=num(S.acBonus);parts.push(`Other ${fmt(num(S.acBonus))}`);}
+ return{v,parts,warn};
+}
+function skillMod(k,ab){const p=S.skills[k]||0;return C.md[ab]+p*C.pb;}
+function weaponProf(w){
+ if(w.preset&&WPRESET[w.preset]){
+  if(C.lock>=1)return true;
+  return SORC_WEAPONS.includes(w.preset)||ELF_WEAPONS.includes(w.preset);
+ }return !!w.profManual;
+}
+function wAbility(w){
+ if(w.hex&&C.lock>=1&&!w.twoH)return'cha';
+ if(w.kind==='ranged')return'dex';
+ if(w.finesse)return C.md.dex>=C.md.str?'dex':'str';
+ return'str';
+}
+
+/* ============ features per level ============ */
+function featuresAt(cls,lvl){return FEATURES.filter(f=>f.cls===cls&&f.lvl===lvl).map(f=>f.name);}
+
+/* ============ rendering ============ */
+const TABS=[['combat','Combat','⚔'],['spells','Spells','✦'],['features','Features','❖'],['gear','Gear','⛨'],['char','Character','☻']];
+function render(){
+ recalc();
+ document.documentElement.dataset.theme=S.theme;
+ $('#themeBtn').textContent=S.theme==='dark'?'☾':'☀';
+ $('#hname').textContent=S.name||'Unnamed Sorcerer';
+ const sub=[];if(C.sorc)sub.push(`Sorcerer ${C.sorc} (${CLS.S.sub})`);if(C.lock)sub.push(`Warlock ${C.lock} (${CLS.W.sub})`);
+ $('#hsub').textContent=`${sub.join(' / ')} · Level ${C.L} · High Elf`;
+ $('#banner').innerHTML=storageOK?'':'<div class="banner">Browser storage is unavailable: changes will not be saved. Use Export in the Character tab.</div>';
+ $('#tabs').innerHTML=TABS.map(t=>`<button data-act="tab" data-t="${t[0]}" class="${S.tab===t[0]?'on':''}"><b>${t[2]}</b>${t[1]}</button>`).join('');
+ const fn={combat:tabCombat,spells:tabSpells,features:tabFeatures,gear:tabGear,char:tabChar}[S.tab]||tabCombat;
+ $('#app').innerHTML=fn();
+ const pct=C.maxHP?Math.round(100*S.hp/C.maxHP):0;
+ $('#dockin').innerHTML=`<button class="btn danger" data-act="damage">Damage</button>
+  <div class="mid"><div class="hpn">${S.hp}<small> / ${C.maxHP} HP${S.temp?` · +${S.temp} temp`:''}</small></div><div class="bar"><i style="width:${pct}%;background:${pct<=25?'var(--red)':'var(--green)'}"></i></div></div>
+  <button class="btn gold" data-act="heal">Heal</button><button class="btn" data-act="rest">Rest</button>`;
+}
+function commit(){save();render();}
+
+function tile(k,label,val){return`<div class="tile plus" data-act="tip" data-k="${k}"><div class="lbl">${label}</div><div class="val">${val}</div></div>`;}
+function pips(key,max,used){let h='';for(let i=0;i<max;i++){h+=`<button class="pip${i<max-used?' on':''}" data-act="pip" data-k="${key}" aria-label="${key}"></button>`;}return h;}
+function usedGet(k){const[t,n]=k.split(':');return t==='slot'?(S.used.slots[n]||0):(S.used[t]||0);}
+function usedSet(k,v){const[t,n]=k.split(':');if(t==='slot')S.used.slots[n]=v;else S.used[t]=v;}
+function maxOf(k){const[t,n]=k.split(':');if(t==='slot')return C.slots[n-1]||0;if(t==='pact')return C.pact?C.pact.n:0;if(t==='sp')return C.spMax;if(t==='curse'||t==='grave')return 1;return 0;}
+
+function tabCombat(){
+ const tips={
+  ac:`AC ${C.ac.v} = ${C.ac.parts.join(' + ')}`+(C.ac.warn?`<br><span style="color:var(--red)">${C.ac.warn}</span>`:''),
+  prof:`Level ${C.L} → proficiency bonus ${fmt(C.pb)}`,
+  dc:`8 + ${C.pb} (prof) + ${C.md.cha} (CHA) = ${C.dc}. Sorcerer and Warlock both use CHA. High Elf cantrip uses INT: DC ${C.dcElf}, attack ${fmt(C.atkElf)}.`,
+  atk:`${C.pb} (prof) + ${C.md.cha} (CHA) = ${fmt(C.atk)}`,
+  init:`DEX ${fmt(C.md.dex)}`,
+  speed:`High Elf base speed. Edit it in the Character tab.`,
+  hp:C.hpParts.join('<br>')};
+ let h=`<div class="grid4">${tile('ac','AC',C.ac.v)}${tile('prof','Prof',fmt(C.pb))}${tile('dc','Spell DC',C.dc)}${tile('atk','Spell atk',fmt(C.atk))}</div>
+ <div class="grid3">${tile('init','Initiative',fmt(C.md.dex))}${tile('speed','Speed',S.speed+' ft')}${tile('hp','Max HP',C.maxHP)}</div>`;
+ if(UI.tip&&tips[UI.tip])h+=`<div class="card tipc">${tips[UI.tip]}</div>`;
+ // concentration + conditions
+ h+=`<div class="card"><div class="row"><div><span class="lbl">Concentration</span> <b>${S.conc?esc(S.conc):'None'}</b></div>${S.conc?'<button class="btn sm" data-act="dropConc">Drop</button>':''}</div>
+ <div class="row"><div class="chips">${S.conditions.length?S.conditions.map(c=>`<span class="chip red">${c}</span>`).join(''):'<span class="meta">No conditions</span>'}</div><button class="btn sm" data-act="conds">Conditions</button></div></div>`;
+ // resources
+ h+=`<div class="card"><h2>Resources</h2><p class="hint">Tap a circle to spend a slot or use; tap an empty one to give it back.</p>`;
+ (C.slots||[]).forEach((m,i)=>{if(m)h+=`<div class="row"><div><div class="t">Level ${i+1} slots</div><div class="s">${m-(S.used.slots[i+1]||0)} / ${m}</div></div><div class="pips">${pips('slot:'+(i+1),m,S.used.slots[i+1]||0)}</div></div>`;});
+ Object.keys(S.extra).forEach(n=>{if(S.extra[n]>0)h+=`<div class="row"><div><div class="t">Created slot, level ${n}</div><div class="s">${S.extra[n]} available · lost on long rest</div></div><button class="btn sm" data-act="useExtra" data-n="${n}">Use</button></div>`;});
+ if(C.pact)h+=`<div class="row"><div><div class="t">Pact slots (level ${C.pact.l})</div><div class="s">${C.pact.n-S.used.pact} / ${C.pact.n} · short rest</div></div><div class="pips">${pips('pact',C.pact.n,S.used.pact)}</div></div>`;
+ if(C.spMax)h+=`<div class="row"><div><div class="t">Sorcery points</div><div class="s">${C.spMax-S.used.sp} / ${C.spMax} · long rest</div></div><div class="pips">${pips('sp',C.spMax,S.used.sp)}</div></div>
+  <div class="row"><div class="s">Flexible Casting: convert slots and points</div><button class="btn sm" data-act="flex">Convert</button></div>`;
+ if(C.lock>=1)h+=`<div class="row"><div><div class="t">Hexblade’s Curse</div><div class="s">${1-S.used.curse} / 1 · short or long rest</div></div><div class="pips">${pips('curse',1,S.used.curse)}</div></div>`;
+ if(C.sorc>=1)h+=`<div class="row"><div><div class="t">Strength of the Grave</div><div class="s">${1-S.used.grave} / 1 · long rest</div></div><div class="pips">${pips('grave',1,S.used.grave)}</div></div>`;
+ [[6,C.sorc],[8,C.lock]].forEach(([d,tot])=>{if(tot>0){const left=tot-(S.used['hd'+d]||0);h+=`<div class="row"><div><div class="t">Hit dice (d${d})</div><div class="s">${left} / ${tot}</div></div><button class="btn sm" data-act="hd" data-d="${d}" ${left<=0?'disabled':''}>Spend</button></div>`;}});
+ h+=`</div>`;
+ // roll reference
+ h+=`<div class="card"><h2>Roll reference</h2><p class="hint">Add these to your d20. A filled dot marks a proficient saving throw.</p><div class="saves">`;
+ const prof={con:1,cha:1};
+ ABIL.forEach(a=>{h+=`<div class="save"><span><i class="dot${prof[a]?' f':''}"></i>${ABN[a]} save</span><b>${fmt(C.md[a]+(prof[a]?C.pb:0))}</b></div>`;});
+ h+=`</div></div>`;
+ // attacks
+ const cursedOn=S.cursed&&C.lock>=1;
+ h+=`<div class="card"><h2>Attacks</h2>`;
+ if(C.lock>=1)h+=`<div class="row"><div><div class="t">Hexblade’s Curse on target</div><div class="s">+${C.pb} damage, crit on 19–20</div></div><button class="btn sm${S.cursed?' on':''}" data-act="toggleCursed">${S.cursed?'Cursed':'Off'}</button></div>`;
+ if(!S.weapons.length)h+=`<p class="hint">No weapon yet. Add one in the Gear tab.</p>`;
+ S.weapons.forEach(w=>{const ab=wAbility(w);const p=weaponProf(w);const m=C.md[ab];const tohit=m+(p?C.pb:0)+num(w.bonus);const dm=m+num(w.bonus);
+  h+=`<div class="row"><div><div class="t">${esc(w.name)}${w.hex&&C.lock>=1?' <i class="tag">Hex Warrior</i>':''}</div><div class="s">${ABN[ab]}${p?'':' · not proficient'}${cursedOn?` · crit 19–20`:''}</div></div><div style="text-align:right"><b>${fmt(tohit)}</b> to hit<div class="s">${esc(w.dmg)}${dm?fmt(dm):''}${cursedOn?` ${fmt(C.pb)} curse`:''} ${esc(w.type)}</div></div></div>`;});
+ h+=`<div class="row"><div><div class="t">Booming Blade rider</div><div class="s">${dynText('bb',true)}</div></div></div>`;
+ h+=`<div class="row"><div><div class="t">Green-Flame Blade rider</div><div class="s">${dynText('gfb',true)}</div></div></div>`;
+ h+=`<div class="row"><div><div class="t">Dark Dive rider</div><div class="s">${dynText('dd',true)}</div></div></div></div>`;
+ // death saves
+ h+=`<div class="card"><h2>Death saves</h2><p class="hint">Used only at 0 HP. Healing resets the marks.</p><div class="row"><div class="t">Successes</div><div class="pips">${[0,1,2].map(i=>`<button class="pip${i<S.death.s?' on':''}" data-act="death" data-k="s" data-i="${i}"></button>`).join('')}</div></div><div class="row"><div class="t">Failures</div><div class="pips">${[0,1,2].map(i=>`<button class="pip${i<S.death.f?' on':''}" data-act="death" data-k="f" data-i="${i}"></button>`).join('')}</div></div></div>`;
+ return h;
+}
+
+function dynText(k,short){
+ const t=C.tier;
+ if(k==='bb'){const on=t-1;return`${on?`+${on}d8 thunder on a hit · `:'no extra damage on a hit yet · '}${t}d8 thunder if the target moves 5+ ft`;}
+ if(k==='gfb'){const on=t-1;return`${on?`+${on}d8 fire on the target · `:''}the second creature takes ${on?on+'d8 + ':''}${C.md.cha} (CHA) fire`;}
+ if(k==='dd'){const x=C.L>=11?2:C.L>=5?1:0;return`reach ${15+5*x} ft${x?` · +${x}d8 psychic on the attack`:' · no extra damage yet'}`;}
+ return'';
+}
+
+function tabSpells(){
+ const cnt=(src,lvl0)=>S.spells.filter(s=>s.src===src&&(lvl0?s.level===0:s.level>0)).length;
+ const row=(name,have,cap)=>`<div class="row"><div class="t">${name}</div><b style="${have>cap?'color:var(--red)':''}">${have} / ${cap}</b></div>`;
+ let h=`<div class="card"><h2>Spellcasting</h2><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 14px"><div><div class="lbl">Spell save DC (CHA)</div><div class="val">${C.dc}</div></div><div><div class="lbl">Spell attack (CHA)</div><div class="val">${fmt(C.atk)}</div></div></div>
+ <p class="hint" style="margin-top:8px">High Elf cantrip uses INT: DC ${C.dcElf}, attack ${fmt(C.atkElf)}.</p></div>`;
+ h+=`<div class="card"><h2>Known</h2>${row('Sorcerer cantrips',cnt('sorc',true),SORC_CANT(C.sorc))}${row('Sorcerer spells',cnt('sorc',false),SORC_KNOWN[Math.min(C.sorc,20)])}`;
+ if(C.lock>=1)h+=`${row('Warlock cantrips',cnt('lock',true),LOCK_CANT(C.lock))}${row('Warlock spells',cnt('lock',false),LOCK_KNOWN[Math.min(C.lock,20)])}`;
+ h+=`${row('High Elf cantrip (wizard list)',cnt('elf',true),1)}<p class="hint">Spells marked “Other” (e.g. DM custom spells) are not counted against these limits.</p></div>`;
+ const byLevel={};S.spells.forEach(s=>{(byLevel[s.level]=byLevel[s.level]||[]).push(s);});
+ Object.keys(byLevel).map(Number).sort((a,b)=>a-b).forEach(l=>{
+  h+=`<div class="card"><h2>${l===0?'Cantrips':'Level '+l}</h2>`;
+  byLevel[l].forEach(sp=>{h+=spellCard(sp);});h+=`</div>`;
+ });
+ h+=`<div class="card"><button class="btn gold" data-act="addSpell">+ Add spell</button></div>`;
+ if(C.lock>=1)h+=`<div class="card"><h2>Hexblade expanded spells</h2><p class="hint">Added to the Warlock list you can learn from.</p>${HEX_EXPANDED.map(r=>`<div class="row"><div class="t">Spell level ${r[0]}</div><div class="s">${r[1]}</div></div>`).join('')}</div>`;
+ return h;
+}
+const SRCN={sorc:'Sorcerer',lock:'Warlock',elf:'High Elf (INT)',free:'Other'};
+function spellCard(sp){
+ const meta=[sp.school,SRCN[sp.src]].filter(Boolean).join(' · ');
+ const info=[['Casting time',sp.cast],['Range',sp.range],['Components',sp.comp],['Duration',sp.dur]].filter(x=>x[1]).map(x=>`<div class="meta"><b>${x[0]}:</b> ${esc(x[1])}</div>`).join('');
+ const dyn=sp.dyn?`<p><b>At your level:</b> ${dynText(sp.dyn)}</p>`:'';
+ const fx=sp.fx==='shield'?`<button class="btn sm${S.shieldSpell?' on':''}" data-act="fx" data-k="shieldSpell">${S.shieldSpell?'Active (+5 AC)':'Mark active'}</button>`:sp.fx==='mage'?`<button class="btn sm${S.mageArmor?' on':''}" data-act="fx" data-k="mageArmor">${S.mageArmor?'Active (AC 13+DEX)':'Mark active'}</button>`:'';
+ return`<details class="spell" data-sid="${sp.id}" ${UI.open[sp.id]?'open':''}><summary><span class="sn">${esc(sp.name)}</span>${sp.conc?'<i class="tag">C</i>':''}<span class="sm">${esc(meta)}</span></summary><div class="sbody">${info}<p>${esc(sp.text)}</p>${dyn}<div class="srow"><button class="btn sm gold" data-act="cast" data-id="${sp.id}">${sp.level?'Cast':'Use'}</button>${fx}<button class="btn sm danger" data-act="delSpell" data-id="${sp.id}">Remove</button></div></div></details>`;
+}
+
+function tabFeatures(){
+ let h='';
+ const groups=[['S','Sorcerer · Shadow Magic',C.sorc],['W','Warlock · Hexblade',C.lock],['R','High Elf',0]];
+ groups.forEach(([c,title,lv])=>{
+  h+=`<div class="card"><h2>${title}</h2>`;
+  if(c==='W'&&!lv)h+=`<p class="hint">Not taken yet. These unlock when you add the Warlock level.</p>`;
+  FEATURES.filter(f=>f.cls===c).forEach(f=>{
+   const locked=f.lvl>lv&&c!=='R'?true:(c==='R'?false:f.lvl>lv);
+   const use=f.use&&!locked?`<div class="pips">${pips(f.use,1,S.used[f.use])}</div>`:'';
+   h+=`<div class="feat${locked?' locked':''}"><div class="h"><b>${esc(f.name)}</b><span class="meta">${c==='R'?'Race':'Level '+f.lvl}${locked?' · locked':''}</span></div><div class="meta" style="color:var(--text)">${esc(f.text)}</div>${use?`<div style="margin-top:6px">${use}<span class="meta"> resets: ${f.reset}</span></div>`:''}</div>`;
+  });
+  h+=`</div>`;
+ });
+ h+=`<div class="card"><h2>Feats</h2>`+(S.feats.length?S.feats.map(f=>`<div class="feat"><div class="h"><b>${esc(f.name)}</b><button class="btn sm danger" data-act="delFeat" data-id="${f.id}">Remove</button></div><div class="meta" style="color:var(--text)">${esc(f.text)}</div></div>`).join(''):'<p class="hint">No feats.</p>')+`<div style="margin-top:8px"><button class="btn gold" data-act="addFeat">+ Add feat</button></div></div>`;
+ return h;
+}
+
+function tabGear(){
+ let h=`<div class="card"><h2>Armor</h2><label>Armor worn</label><select data-bind="armor">${ARMOR.map(a=>`<option value="${a.id}"${S.armor===a.id?' selected':''}>${a.name}</option>`).join('')}</select>
+ <div style="display:grid;grid-template-columns:auto 1fr;gap:8px 16px;align-items:end"><div><label>Shield (+2)</label><input type="checkbox" data-bind="shield" ${S.shield?'checked':''}></div><div><label>Other AC bonus</label><input type="number" data-bind="acBonus" data-t="n" value="${num(S.acBonus)}"></div></div>
+ <p class="hint" style="margin-top:8px">AC is ${C.ac.v}: ${C.ac.parts.join(' + ')}. ${C.ac.warn?`<span style="color:var(--red)">${C.ac.warn}</span>`:''}</p></div>`;
+ h+=`<div class="card"><h2>Weapons</h2>`;
+ if(!S.weapons.length)h+=`<p class="hint">No weapons.</p>`;
+ S.weapons.forEach((w,i)=>{
+  const canHex=C.lock>=1&&!w.twoH;
+  h+=`<div class="row"><div><div class="t">${esc(w.name)}${num(w.bonus)?` ${fmt(num(w.bonus))}`:''}</div><div class="s">${esc(w.dmg)} ${esc(w.type)} · ${w.cat}${w.finesse?' · finesse':''}${w.twoH?' · two-handed':''}${w.kind==='ranged'?' · ranged':''}</div></div>
+  <div class="srow">${canHex?`<button class="btn sm${w.hex?' on':''}" data-act="hexW" data-i="${i}">${w.hex?'Hex Warrior bound':'Bind (Hex Warrior)'}</button>`:''}<button class="btn sm danger" data-act="delW" data-i="${i}">Remove</button></div></div>`;
+ });
+ h+=`<div style="margin-top:8px"><button class="btn gold" data-act="addW">+ Add weapon</button></div><p class="hint" style="margin-top:8px">Hex Warrior (CHA for attack and damage) needs a weapon you are proficient with and that is not two-handed. You bind a new one at the end of each long rest.</p></div>`;
+ h+=`<div class="card"><h2>Inventory</h2>`;
+ S.inventory.forEach((it,i)=>{h+=`<div class="row"><input data-bind="inventory.${i}.name" value="${esc(it.name)}" style="flex:1"><input type="number" data-bind="inventory.${i}.qty" data-t="n" value="${num(it.qty)}" style="width:70px"><button class="btn sm danger" data-act="delItem" data-i="${i}">×</button></div>`;});
+ h+=`<div style="margin-top:8px"><button class="btn gold" data-act="addItem">+ Add item</button></div></div>`;
+ h+=`<div class="card"><h2>Coins</h2><div class="grid4" style="grid-template-columns:repeat(5,1fr)">${['cp','sp','ep','gp','pp'].map(c=>`<div><label>${c.toUpperCase()}</label><input type="number" data-bind="coins.${c}" data-t="n" value="${num(S.coins[c])}"></div>`).join('')}</div></div>`;
+ return h;
+}
+
+function tabChar(){
+ let h=`<div class="card"><h2>Identity</h2><label>Name</label><input data-bind="name" value="${esc(S.name)}">
+ <div class="two"><div><label>Background</label><input data-bind="background" value="${esc(S.background)}"></div><div><label>Alignment</label><input data-bind="alignment" value="${esc(S.alignment)}"></div>
+ <div><label>Speed (ft)</label><input type="number" data-bind="speed" data-t="n" value="${num(S.speed)}"></div><div><label>Other max HP bonus</label><input type="number" data-bind="hpBonus" data-t="n" value="${num(S.hpBonus)}"></div></div>
+ <label>Languages</label><input data-bind="languages" value="${esc(S.languages)}"></div>`;
+ // warnings
+ const w=[];
+ if(C.sorc>=1&&C.lock>=1&&C.sc.cha<13)w.push('Multiclassing into Sorcerer and Warlock requires CHA 13 (your total is '+C.sc.cha+').');
+ if(C.L>20)w.push('Character level above 20.');
+ const sk=S.spells.filter(s=>s.src==='sorc');
+ if(sk.filter(s=>s.level===0).length>SORC_CANT(C.sorc))w.push('More Sorcerer cantrips than allowed.');
+ if(sk.filter(s=>s.level>0).length>SORC_KNOWN[Math.min(C.sorc,20)])w.push('More Sorcerer spells known than allowed.');
+ if(C.ac.warn)w.push(C.ac.warn);
+ if(w.length)h+=`<div class="card warn"><h2>Check</h2><ul>${w.map(x=>`<li>${x}</li>`).join('')}</ul></div>`;
+ // abilities
+ h+=`<div class="card"><h2>Ability scores</h2><p class="hint">Enter your rolled scores in Base. Race is a free field (it starts at +2 DEX, +1 INT, the High Elf default): set it to whatever your DM allows. Use Other for ASIs and magic items.</p><table><tr><th class="l"></th><th>Base</th><th>Race</th><th>Other</th><th>Total</th><th>Mod</th></tr>`;
+ ABIL.forEach(a=>{h+=`<tr><td class="l"><b>${ABN[a]}</b></td><td><input type="number" data-bind="abilities.${a}.base" data-t="n" value="${num(S.abilities[a].base)}"></td><td><input type="number" data-bind="racial.${a}" data-t="n" value="${num(S.racial[a])}"></td><td><input type="number" data-bind="abilities.${a}.bonus" data-t="n" value="${num(S.abilities[a].bonus)}"></td><td><b>${C.sc[a]}</b></td><td><b>${fmt(C.md[a])}</b></td></tr>`;});
+ h+=`</table></div>`;
+ // levels
+ h+=`<div class="card"><h2>Levels</h2><p class="hint">Level 1 takes the maximum hit die. For later levels enter the rolled value, or leave empty for the average.</p>`;
+ S.levels.forEach((lv,i)=>{const d=CLS[lv.cls].die;h+=`<div class="row"><div><div class="t">${i+1}. ${CLS[lv.cls].name} (${CLS[lv.cls].sub})</div><div class="s">d${d}</div></div>${i===0?`<b>${d} (max)</b>`:`<input type="number" data-bind="levels.${i}.roll" data-t="nn" placeholder="avg ${d/2+1}" value="${lv.roll==null?'':lv.roll}" style="width:90px">`}</div>`;});
+ h+=`<div class="srow" style="margin-top:10px"><button class="btn gold" data-act="addLevel"${C.L>=20?' disabled':''}>+ Level up</button><button class="btn danger" data-act="delLevel"${C.L<=1?' disabled':''}>Remove last level</button></div></div>`;
+ // saves / skills
+ h+=`<div class="card"><h2>Skills</h2><p class="hint">Tap the dot to cycle: none, proficient, expertise. Sorcerer picks 2 of Arcana, Deception, Insight, Intimidation, Persuasion, Religion; Perception comes from Keen Senses.</p>`;
+ SKILLS.forEach(([k,n,ab])=>{const p=S.skills[k]||0;h+=`<div class="row" style="padding:4px 0"><div><button class="btn sm${p?' on':''}" data-act="skill" data-k="${k}" style="min-width:34px">${p===2?'◉':p===1?'●':'○'}</button> ${n} <span class="s">(${ABN[ab]})</span></div><b>${fmt(skillMod(k,ab))}</b></div>`;});
+ h+=`<div class="row"><div class="t">Passive Perception</div><b>${10+skillMod('perception','wis')}</b></div><div class="row"><div class="t">Darkvision</div><b>${C.sorc>=1?'120 ft':'60 ft'}</b></div></div>`;
+ h+=`<div class="card"><h2>Proficiencies</h2><div class="meta" style="color:var(--text)"><b>Armor:</b> ${C.lock>=1?'Light, medium, shields':'None'}<br><b>Weapons:</b> ${C.lock>=1?'Simple and martial':'Daggers, darts, slings, quarterstaffs, light crossbows, longswords, shortswords, shortbows, longbows'}<br><b>Saves:</b> CON, CHA</div><label>Tools and other proficiencies</label><input data-bind="tools" value="${esc(S.tools)}"><label>Metamagic known</label><input data-bind="metamagic" value="${esc(S.metamagic)}" placeholder="Unlocks at Sorcerer 3"></div>`;
+ h+=`<div class="card"><h2>Notes</h2><textarea data-bind="notes">${esc(S.notes)}</textarea></div>`;
+ h+=`<div class="card"><h2>Data</h2><p class="hint">Changes are saved automatically in this browser. Export a backup now and then.</p><div class="srow"><button class="btn gold" data-act="export">Export backup</button><button class="btn" data-act="import">Import backup</button><button class="btn danger" data-act="reset">Reset sheet</button></div></div>`;
+ return h;
+}
+
+/* ============ modal + toast ============ */
+function modal(title,body,buttons){
+ $('#modal').innerHTML=`<div class="mb" data-act="closeModal"></div><div class="mc card"><h3>${title}</h3><div>${body}</div><div class="mbtns">${buttons.map((b,i)=>`<button class="btn ${b.cls||''}" data-mbtn="${i}">${b.label}</button>`).join('')}</div></div>`;
+ $('#modal').className='open';MODAL={buttons};
+}
+function closeModal(){$('#modal').className='';$('#modal').innerHTML='';MODAL=null;}
+let toastT;function toast(msg){const t=$('#toast');t.textContent=msg;t.style.display='block';clearTimeout(toastT);toastT=setTimeout(()=>{t.style.display='none';},3800);}
+const val=id=>{const e=$('#'+id);return e?e.value:'';};
+
+/* ============ actions ============ */
+const ACT={
+ tab(el){S.tab=el.dataset.t;UI.tip=null;save();render();window.scrollTo(0,0);},
+ tip(el){UI.tip=UI.tip===el.dataset.k?null:el.dataset.k;render();},
+ closeModal(){closeModal();},
+ pip(el){const k=el.dataset.k;const mx=maxOf(k);let u=usedGet(k);if(el.classList.contains('on'))u=Math.min(mx,u+1);else u=Math.max(0,u-1);usedSet(k,u);commit();},
+ death(el){const k=el.dataset.k,i=+el.dataset.i;S.death[k]=S.death[k]===i+1?i:i+1;commit();},
+ dropConc(){S.conc='';commit();},
+ toggleCursed(){S.cursed=!S.cursed;commit();},
+ fx(el){S[el.dataset.k]=!S[el.dataset.k];commit();},
+ skill(el){const k=el.dataset.k;S.skills[k]=((S.skills[k]||0)+1)%3;commit();},
+ theme(){S.theme=S.theme==='dark'?'light':'dark';commit();},
+ conds(){modal('Conditions',`<div class="two">${CONDITIONS.map(c=>`<label style="display:flex;gap:8px;align-items:center;color:var(--text);font-size:14px"><input type="checkbox" class="cond" value="${c}" ${S.conditions.includes(c)?'checked':''}>${c}</label>`).join('')}</div>`,[{label:'Save',cls:'gold',fn(){S.conditions=[...document.querySelectorAll('.cond:checked')].map(x=>x.value);commit();}}]);},
+ hd(el){const d=+el.dataset.d,key='hd'+d,tot=d===6?C.sorc:C.lock;if((S.used[key]||0)>=tot){toast('No d'+d+' left');return;}const r=roll(d);const heal=Math.max(0,r+C.md.con);S.used[key]=(S.used[key]||0)+1;S.hp=Math.min(C.maxHP,S.hp+heal);toast(`d${d}: ${r} ${fmt(C.md.con)} CON → healed ${heal}`);commit();},
+ useExtra(el){const n=el.dataset.n;S.extra[n]=Math.max(0,(S.extra[n]||0)-1);commit();},
+ flex(){
+  const maxN=Math.min(5,Math.max(...(C.slots.map((m,i)=>m?i+1:0))));
+  let body=`<p class="hint">Sorcery points: ${C.spMax-S.used.sp} / ${C.spMax}</p><div class="optlist">`;
+  for(let n=1;n<=Math.min(5,maxN);n++)body+=`<button class="btn" data-mbtn="${'c'+n}">Create a level ${n} slot (${FLEX_COST[n]} points)</button>`;
+  body+=`<hr style="border-color:var(--line);width:100%">`;
+  for(let n=1;n<=9;n++){const left=(C.slots[n-1]||0)-(S.used.slots[n]||0);if(left>0)body+=`<button class="btn" data-mbtn="${'s'+n}">Burn a level ${n} slot for ${n} points</button>`;}
+  if(C.pact&&C.pact.n-S.used.pact>0)body+=`<button class="btn" data-mbtn="p">Burn a Pact slot (level ${C.pact.l}) for ${C.pact.l} points</button>`;
+  body+='</div>';
+  modal('Flexible Casting',body,[{label:'Close'}]);
+  MODAL.flex=true;
+ },
+ damage(){modal('Damage',`<label>Amount</label><input type="number" id="m_amt" min="0" value="" autofocus><label style="display:flex;gap:8px;align-items:center;color:var(--text)"><input type="checkbox" id="m_sp"> Radiant damage or a critical hit</label>`,[{label:'Cancel'},{label:'Apply',cls:'danger',fn(){const a=num(val('m_amt'));const sp=$('#m_sp').checked;if(a>0)applyDamage(a,sp);}}]);},
+ heal(){modal('Heal',`<label>Amount</label><input type="number" id="m_amt" min="0" value=""><label>Temp HP (replaces the current value only if higher)</label><input type="number" id="m_tmp" min="0" value="">`,[{label:'Cancel'},{label:'Apply',cls:'gold',fn(){const a=num(val('m_amt'));const t=num(val('m_tmp'));if(a>0){if(S.hp===0){S.death={s:0,f:0};}S.hp=Math.min(C.maxHP,S.hp+a);}if(t>S.temp)S.temp=t;commit();}}]);},
+ rest(){modal('Rest',`<p class="hint">Short rest: Pact slots and Hexblade’s Curse come back${C.sorc>=20?', plus 4 sorcery points':''}. Spend hit dice from Resources.<br>Long rest: HP, all slots, sorcery points and uses restored, half your hit dice regained.</p>`,[{label:'Cancel'},{label:'Short rest',fn(){S.used.pact=0;S.used.curse=0;if(C.sorc>=20)S.used.sp=Math.max(0,S.used.sp-4);toast('Short rest done');commit();}},{label:'Long rest',cls:'gold',fn(){longRest();}}]);},
+ addLevel(){
+  modal('Level up',`<label>New level in</label><select id="m_cls"><option value="S">Sorcerer (Shadow Magic)</option><option value="W">Warlock (Hexblade)</option></select><label>Hit points rolled (leave empty for the average)</label><input type="number" id="m_roll" min="1">`,[{label:'Cancel'},{label:'Add level',cls:'gold',fn(){
+   const cls=val('m_cls');const r=val('m_roll');const before=C.maxHP;
+   S.levels.push({cls,roll:r===''?null:num(r)});recalc();S.hp+=C.maxHP-before;
+   const cl=S.levels.filter(l=>l.cls===cls).length;const nf=featuresAt(cls,cl);
+   toast(`Level ${C.L}: ${CLS[cls].name} ${cl}. ${nf.length?'New: '+nf.join(', '):'No tracked feature at this level; check the book.'}`);commit();}}]);},
+ delLevel(){modal('Remove last level',`<p>Remove level ${C.L} (${CLS[S.levels[C.L-1].cls].name})? Slots and HP will be recalculated.</p>`,[{label:'Cancel'},{label:'Remove',cls:'danger',fn(){S.levels.pop();recalc();commit();}}]);},
+ addSpell(){modal('Add spell',`<label>Name</label><input id="m_n"><div class="two"><div><label>Level (0 = cantrip)</label><input type="number" id="m_l" min="0" max="9" value="1"></div><div><label>Source</label><select id="m_s"><option value="sorc">Sorcerer</option><option value="lock">Warlock</option><option value="elf">High Elf (INT)</option><option value="free">Other</option></select></div>
+  <div><label>Casting time</label><input id="m_c" value="1 action"></div><div><label>Range</label><input id="m_r"></div><div><label>Components</label><input id="m_k"></div><div><label>Duration</label><input id="m_d"></div></div>
+  <label style="display:flex;gap:8px;align-items:center;color:var(--text)"><input type="checkbox" id="m_cc"> Concentration</label><label>Description</label><textarea id="m_t"></textarea>`,[{label:'Cancel'},{label:'Add',cls:'gold',fn(){const n=val('m_n').trim();if(!n){toast('Name required');return false;}S.spells.push({id:uid(),name:n,level:Math.min(9,Math.max(0,num(val('m_l')))),src:val('m_s'),school:'',cast:val('m_c'),range:val('m_r'),comp:val('m_k'),dur:val('m_d'),conc:$('#m_cc').checked,text:val('m_t')});commit();}}]);},
+ delSpell(el){const sp=S.spells.find(s=>s.id===el.dataset.id);if(!sp)return;modal('Remove spell',`<p>Remove ${esc(sp.name)}?</p>`,[{label:'Cancel'},{label:'Remove',cls:'danger',fn(){S.spells=S.spells.filter(s=>s.id!==sp.id);commit();}}]);},
+ cast(el){
+  const sp=S.spells.find(s=>s.id===el.dataset.id);if(!sp)return;
+  const finish=(msg)=>{if(sp.fx==='mage')S.mageArmor=true;if(sp.fx==='shield')S.shieldSpell=true;if(sp.conc)S.conc=sp.name;toast(msg);commit();};
+  if(sp.level===0){finish(sp.name+(sp.conc?' (concentration)':''));return;}
+  const opts=[];
+  for(let n=sp.level;n<=9;n++){const mx=C.slots[n-1]||0,left=mx-(S.used.slots[n]||0);if(mx&&left>0)opts.push({label:`Sorcerer slot, level ${n} (${left} left)${n>sp.level?' · upcast':''}`,fn(){S.used.slots[n]=(S.used.slots[n]||0)+1;finish(`${sp.name} cast with a level ${n} slot`);}});}
+  if(C.pact&&C.pact.l>=sp.level&&C.pact.n-S.used.pact>0)opts.push({label:`Pact slot, level ${C.pact.l} (${C.pact.n-S.used.pact} left)`,fn(){S.used.pact++;finish(`${sp.name} cast with a Pact slot`);}});
+  Object.keys(S.extra).forEach(n=>{if(+n>=sp.level&&S.extra[n]>0)opts.push({label:`Created slot, level ${n} (${S.extra[n]})`,fn(){S.extra[n]--;finish(`${sp.name} cast with a created slot`);}});});
+  opts.push({label:'No slot (ritual or free cast)',fn(){finish(sp.name);}});
+  modal('Cast '+esc(sp.name),'<p class="hint">Choose the slot to spend.</p>',[{label:'Cancel',cls:'danger'}].concat(opts.slice().reverse()));
+ },
+ addW(){
+  const presets=Object.keys(WPRESET).map(k=>`<option value="${k}">${WPRESET[k].name}</option>`).join('');
+  modal('Add weapon',`<label>Preset</label><select id="m_p"><option value="">Custom</option>${presets}</select><label>Name</label><input id="m_n"><div class="two"><div><label>Damage dice</label><input id="m_d" value="1d8"></div><div><label>Damage type</label><input id="m_t" value="slashing"></div><div><label>Magic bonus</label><input type="number" id="m_b" value="0"></div><div><label>Type</label><select id="m_k"><option value="melee">Melee</option><option value="ranged">Ranged</option></select></div></div>
+  <div class="two"><label style="display:flex;gap:8px;align-items:center;color:var(--text)"><input type="checkbox" id="m_f"> Finesse</label><label style="display:flex;gap:8px;align-items:center;color:var(--text)"><input type="checkbox" id="m_2"> Two-handed</label><label style="display:flex;gap:8px;align-items:center;color:var(--text)"><input type="checkbox" id="m_pr"> I am proficient (custom only)</label></div>`,
+  [{label:'Cancel'},{label:'Add',cls:'gold',fn(){const p=val('m_p');const n=val('m_n').trim()||(p?WPRESET[p].name:'');if(!n){toast('Name required');return false;}
+   S.weapons.push({id:uid(),preset:p||'',name:n,dmg:val('m_d')||'1d4',type:val('m_t'),kind:val('m_k'),finesse:$('#m_f').checked,twoH:$('#m_2').checked,cat:p?WPRESET[p].cat:'custom',bonus:num(val('m_b')),hex:false,profManual:$('#m_pr').checked});commit();}}]);},
+ addFeat(){modal('Add feat',`<label>Name</label><input id="m_n"><label>Description</label><textarea id="m_t"></textarea>`,[{label:'Cancel'},{label:'Add',cls:'gold',fn(){const n=val('m_n').trim();if(!n){toast('Name required');return false;}S.feats.push({id:uid(),name:n,text:val('m_t')});commit();}}]);},
+ delFeat(el){S.feats=S.feats.filter(f=>f.id!==el.dataset.id);commit();},
+ delW(el){S.weapons.splice(+el.dataset.i,1);commit();},
+ hexW(el){const i=+el.dataset.i;const was=S.weapons[i].hex;S.weapons.forEach(w=>w.hex=false);S.weapons[i].hex=!was;commit();},
+ addItem(){S.inventory.push({name:'New item',qty:1});commit();},
+ delItem(el){S.inventory.splice(+el.dataset.i,1);commit();},
+ export(){const b=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='inei-amenokage-backup.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000);},
+ import(){$('#importFile').click();},
+ reset(){modal('Reset sheet','<p>This deletes everything saved in this browser and restores the starting sheet. Export a backup first if unsure.</p>',[{label:'Cancel'},{label:'Reset',cls:'danger',fn(){S=clone(DEFAULT);commit();}}]);}
+};
+
+function applyDamage(a,special){
+ let rem=a;if(S.temp>0){const t=Math.min(S.temp,rem);S.temp-=t;rem-=t;}
+ const prev=S.hp;let msg='';
+ if(rem>0&&prev===0){S.death.f=Math.min(3,S.death.f+1);msg=`Damage at 0 HP: death save failure (${S.death.f}/3). `;}
+ const over=rem-prev;S.hp=Math.max(0,prev-rem);
+ if(S.conc&&rem>0)msg+=`Concentration on ${S.conc}: CON save DC ${Math.max(10,Math.floor(a/2))}${S.feats.some(f=>/war caster/i.test(f.name))?' (advantage, War Caster)':''}. `;
+ if(S.hp===0&&prev>0){
+  if(over>=C.maxHP){commit();toast('Massive damage: instant death.');return;}
+  const canGrave=C.sorc>=1&&!S.used.grave&&!special;
+  if(canGrave){const dc=5+a;commit();if(msg)toast(msg);
+   modal('Strength of the Grave',`<p>You drop to 0 HP. Make a CHA save, DC <b>${dc}</b> (5 + ${a} damage). On a success you stay at 1 HP instead.</p>`,[{label:'Failed',fn(){S.death={s:0,f:0};commit();}},{label:'Succeeded: 1 HP',cls:'gold',fn(){S.hp=1;S.used.grave=1;commit();}}]);
+   return;}
+  S.death={s:0,f:0};msg+='You are at 0 HP.';
+ }
+ commit();if(msg)toast(msg);
+}
+function longRest(){
+ S.hp=C.maxHP;S.temp=0;S.death={s:0,f:0};S.conc='';S.shieldSpell=false;S.mageArmor=false;
+ S.used.slots={};S.used.pact=0;S.used.sp=0;S.used.curse=0;S.used.grave=0;S.extra={};
+ let regain=Math.max(1,Math.floor(C.L/2));
+ [8,6].forEach(d=>{const k='hd'+d;const take=Math.min(regain,S.used[k]||0);S.used[k]=(S.used[k]||0)-take;regain-=take;});
+ toast('Long rest done');commit();
+}
+
+/* ============ events ============ */
+document.addEventListener('click',e=>{
+ const mb=e.target.closest('[data-mbtn]');
+ if(mb&&MODAL){const b=MODAL.buttons[mb.dataset.mbtn];
+  if(MODAL.flex){flexAct(mb.dataset.mbtn);return;}
+  if(b){const cur=MODAL;const r=b.fn?b.fn():undefined;if(r!==false&&MODAL===cur)closeModal();}return;}
+ const el=e.target.closest('[data-act]');if(!el)return;
+ const f=el.dataset.act==='closeModal'?ACT.closeModal:ACT[el.dataset.act];if(f)f(el);
+});
+function flexAct(code){
+ if(!/^[csp]/.test(code)){closeModal();return;}
+ const t=code[0],n=+code.slice(1);
+ if(t==='c'){const cost=FLEX_COST[n];if(C.spMax-S.used.sp<cost){toast('Not enough sorcery points');return;}S.used.sp+=cost;S.extra[n]=(S.extra[n]||0)+1;}
+ else if(t==='s'){S.used.slots[n]=(S.used.slots[n]||0)+1;S.used.sp=Math.max(0,S.used.sp-n);}
+ else if(code==='p'){S.used.pact++;S.used.sp=Math.max(0,S.used.sp-C.pact.l);}
+ closeModal();commit();toast('Converted');
+}
+document.addEventListener('change',e=>{
+ const t=e.target;
+ if(t.id==='m_p'){const p=WPRESET[t.value];if(p){$('#m_n').value=p.name;$('#m_d').value=p.dmg;$('#m_t').value=p.type;$('#m_k').value=p.kind;$('#m_f').checked=p.finesse;$('#m_2').checked=p.twoH;}return;}
+ if(t.id==='importFile'){const f=t.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const o=JSON.parse(r.result);if(!Array.isArray(o.levels))throw 0;S=migrate(merge(clone(DEFAULT),o));commit();toast('Backup imported');}catch(x){toast('Invalid backup file');}};r.readAsText(f);t.value='';return;}
+ const b=t.dataset&&t.dataset.bind;if(!b)return;
+ const path=b.split('.');let o=S;for(let i=0;i<path.length-1;i++)o=o[path[i]];
+ const last=path[path.length-1];
+ let v=t.type==='checkbox'?t.checked:t.value;
+ if(t.dataset.t==='n')v=num(v);else if(t.dataset.t==='nn')v=v===''?null:num(v);
+ o[last]=v;commit();
+});
+document.addEventListener('toggle',e=>{const d=e.target;if(d.dataset&&d.dataset.sid)UI.open[d.dataset.sid]=d.open;},true);
+$('#themeBtn').addEventListener('click',()=>ACT.theme());
+document.addEventListener('focusin',e=>{if(/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)&&!MODAL)document.body.classList.add('typing');});
+document.addEventListener('focusout',()=>{setTimeout(()=>{if(!/^(INPUT|TEXTAREA|SELECT)$/.test((document.activeElement||{}).tagName))document.body.classList.remove('typing');},50);});
+if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js').catch(()=>{});
+render();
+window.__sheet={get S(){return S;},get C(){return C;},ACT,recalc,render};
+})();
+</script>
+</body>
+</html>
