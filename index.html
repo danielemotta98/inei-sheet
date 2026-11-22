@@ -161,6 +161,19 @@ const LOCK_CANT=l=>l>=10?4:l>=4?3:l>=1?2:0;
 const LOCK_KNOWN=[0,2,3,4,5,6,7,8,9,10,10,11,11,12,12,13,13,14,14,15,15];
 const PACT=l=>l<1?null:l===1?{n:1,l:1}:l<=2?{n:2,l:1}:l<=4?{n:2,l:2}:l<=6?{n:2,l:3}:l<=8?{n:2,l:4}:l<=10?{n:2,l:5}:l<=16?{n:3,l:5}:{n:4,l:5};
 const FLEX_COST={1:2,2:3,3:5,4:6,5:7};
+const META_KNOWN=l=>l>=17?4:l>=10?3:l>=3?2:0;
+const METAMAGIC=[
+ {id:'careful',name:'Careful Spell',cost:1,text:'When you cast a spell that forces other creatures to make a saving throw, choose up to your Charisma modifier of them (minimum 1). A chosen creature automatically succeeds on its save.'},
+ {id:'distant',name:'Distant Spell',cost:1,text:'When you cast a spell with a range of 5 feet or more, double its range. When you cast a spell with a range of touch, its range becomes 30 feet.'},
+ {id:'empowered',name:'Empowered Spell',cost:1,text:'When you roll damage for a spell, reroll up to your Charisma modifier of the damage dice (minimum 1) and use the new rolls. You can use this even if you already used another Metamagic option on the spell.'},
+ {id:'extended',name:'Extended Spell',cost:1,text:'When you cast a spell with a duration of 1 minute or longer, double its duration, to a maximum of 24 hours.'},
+ {id:'heightened',name:'Heightened Spell',cost:3,text:'When you cast a spell that forces a creature to make a saving throw, one target of the spell has disadvantage on its first saving throw against it.'},
+ {id:'quickened',name:'Quickened Spell',cost:2,text:'When you cast a spell with a casting time of 1 action, change the casting time to 1 bonus action for this casting.'},
+ {id:'seeking',name:'Seeking Spell',cost:2,text:'If you make an attack roll for a spell and miss, spend 2 sorcery points to reroll the d20 and use the new roll. You can use this even if you already used another Metamagic option on the spell.'},
+ {id:'subtle',name:'Subtle Spell',cost:1,text:'When you cast a spell, you can cast it without any somatic or verbal components.'},
+ {id:'transmuted',name:'Transmuted Spell',cost:1,text:'When you cast a spell that deals acid, cold, fire, lightning, poison or thunder damage, change that damage type to one of the other types in the list.'},
+ {id:'twinned',name:'Twinned Spell',cost:'X',text:'When you cast a spell that targets only one creature and doesn’t have a range of self, target a second creature in range with the same spell. Cost: the spell’s level (1 point for a cantrip). The spell must be incapable of targeting more than one creature at its current level.'}];
+const META_NOTE='You can use only one Metamagic option on a spell when you cast it, unless noted otherwise (Empowered and Seeking can be added to another option).';
 const CLS={S:{name:'Sorcerer',die:6,sub:'Shadow Magic'},W:{name:'Warlock',die:8,sub:'Hexblade'}};
 const ARMOR=[
  {id:'none',name:'No armor',base:10,dex:'full',cat:'none'},
@@ -206,7 +219,7 @@ const FEATURES=[
  {cls:'S',lvl:1,name:'Eyes of the Dark',text:'Darkvision 120 ft. At Sorcerer 3 you also know Darkness and can cast it by spending 2 sorcery points; you can see through the darkness it creates.'},
  {cls:'S',lvl:1,name:'Strength of the Grave',text:'When damage would reduce you to 0 HP (not radiant, not a critical hit), make a CHA save, DC 5 + the damage taken. On a success you drop to 1 HP instead. Once per long rest.',use:'grave',reset:'Long rest'},
  {cls:'S',lvl:2,name:'Font of Magic',text:'Sorcery points equal to your Sorcerer level. Flexible Casting: spend points to create a slot (L1 2, L2 3, L3 5, L4 6, L5 7 points) or burn a slot to gain points equal to its level. Created slots vanish on a long rest.'},
- {cls:'S',lvl:3,name:'Metamagic',text:'Choose 2 Metamagic options (3 more at Sorcerer 10 and 17: total 3, then 4). Each costs sorcery points as listed in its description. Record your picks in the Character tab.'},
+ {cls:'S',lvl:3,name:'Metamagic',text:'Choose 2 Metamagic options (1 more at Sorcerer 10 and at 17: total 3, then 4). Each costs sorcery points as listed in its description. Manage your picks in the Metamagic card at the top of this tab.'},
  {cls:'S',lvl:4,name:'Ability Score Improvement',text:'At Sorcerer 4, 8, 12, 16 and 19: +2 to one score or +1 to two scores (or a feat). Add them in the "Other" column of the Character tab.'},
  {cls:'S',lvl:6,name:'Hound of Ill Omen',text:'Bonus action, 3 sorcery points: summon a spectral hound to harass one creature you can see within 120 ft. It uses dire wolf statistics with the changes in Xanathar’s Guide; check the book for the full text.'},
  {cls:'S',lvl:14,name:'Shadow Walk',text:'Bonus action: while in dim light or darkness, teleport up to 120 ft to an unoccupied space you can see that is also in dim light or darkness.'},
@@ -223,7 +236,7 @@ const FEATURES=[
 const DEFAULT={
  v:2,theme:'dark',tab:'combat',
  feats:[{id:'f1',name:'War Caster',text:'Advantage on Constitution saves to keep concentrating when you take damage. You can perform somatic components even with weapons or a shield in one or both hands. When a hostile creature’s movement provokes an opportunity attack from you, you can use your reaction to cast a spell at it instead (casting time 1 action, targeting only that creature).'}],
- name:"In'ei Amenokage",background:'',alignment:'',speed:30,languages:'Common, Elvish, +1 of your choice',tools:'',metamagic:'',notes:'',
+ name:"In'ei Amenokage",background:'',alignment:'',speed:30,languages:'Common, Elvish, +1 of your choice',tools:'',metamagic:'',metaKnown:[],notes:'',
  levels:[{cls:'S',roll:null}],
  abilities:{str:{base:10,bonus:0},dex:{base:10,bonus:0},con:{base:10,bonus:0},int:{base:10,bonus:0},wis:{base:10,bonus:0},cha:{base:10,bonus:0}},
  racial:{str:0,dex:2,con:0,int:1,wis:0,cha:0},
@@ -418,8 +431,17 @@ function spellCard(sp){
  return`<details class="spell" data-sid="${sp.id}" ${UI.open[sp.id]?'open':''}><summary><span class="sn">${esc(sp.name)}</span>${sp.conc?'<i class="tag">C</i>':''}<span class="sm">${esc(meta)}</span></summary><div class="sbody">${info}<p>${esc(sp.text)}</p>${dyn}<div class="srow"><button class="btn sm gold" data-act="cast" data-id="${sp.id}">${sp.level?'Cast':'Use'}</button>${fx}<button class="btn sm danger" data-act="delSpell" data-id="${sp.id}">Remove</button></div></div></details>`;
 }
 
+function metaCard(){
+ const allowed=META_KNOWN(C.sorc),known=METAMAGIC.filter(m=>S.metaKnown.includes(m.id));
+ let h=`<div class="card"><h2>Metamagic</h2>`;
+ if(!allowed){return h+`<p class="hint">Unlocks at Sorcerer 3.</p></div>`;}
+ h+=`<p class="hint">Known ${known.length} / ${allowed} · Sorcery points ${C.spMax-S.used.sp} / ${C.spMax}. ${META_NOTE}</p>`;
+ known.forEach(m=>{h+=`<div class="feat"><div class="h"><b>${esc(m.name)}</b><span class="meta">${m.cost==='X'?'X points':m.cost+' pt'+(m.cost>1?'s':'')}</span></div><div class="meta" style="color:var(--text)">${esc(m.text)}</div><div class="srow" style="margin-top:6px"><button class="btn sm gold" data-act="useMeta" data-id="${m.id}">Use</button></div></div>`;});
+ if(!known.length)h+=`<p class="hint">No options chosen yet.</p>`;
+ return h+`<div style="margin-top:8px"><button class="btn gold" data-act="pickMeta">Choose options</button></div></div>`;
+}
 function tabFeatures(){
- let h='';
+ let h=metaCard();
  const groups=[['S','Sorcerer · Shadow Magic',C.sorc],['W','Warlock · Hexblade',C.lock],['R','High Elf',0]];
  groups.forEach(([c,title,lv])=>{
   h+=`<div class="card"><h2>${title}</h2>`;
@@ -466,6 +488,7 @@ function tabChar(){
  const sk=S.spells.filter(s=>s.src==='sorc');
  if(sk.filter(s=>s.level===0).length>SORC_CANT(C.sorc))w.push('More Sorcerer cantrips than allowed.');
  if(sk.filter(s=>s.level>0).length>SORC_KNOWN[Math.min(C.sorc,20)])w.push('More Sorcerer spells known than allowed.');
+ if(S.metaKnown.length>META_KNOWN(C.sorc))w.push('More Metamagic options known than allowed.');
  if(C.ac.warn)w.push(C.ac.warn);
  if(w.length)h+=`<div class="card warn"><h2>Check</h2><ul>${w.map(x=>`<li>${x}</li>`).join('')}</ul></div>`;
  // abilities
@@ -480,7 +503,7 @@ function tabChar(){
  h+=`<div class="card"><h2>Skills</h2><p class="hint">Tap the dot to cycle: none, proficient, expertise. Sorcerer picks 2 of Arcana, Deception, Insight, Intimidation, Persuasion, Religion; Perception comes from Keen Senses.</p>`;
  SKILLS.forEach(([k,n,ab])=>{const p=S.skills[k]||0;h+=`<div class="row" style="padding:4px 0"><div><button class="btn sm${p?' on':''}" data-act="skill" data-k="${k}" style="min-width:34px">${p===2?'◉':p===1?'●':'○'}</button> ${n} <span class="s">(${ABN[ab]})</span></div><b>${fmt(skillMod(k,ab))}</b></div>`;});
  h+=`<div class="row"><div class="t">Passive Perception</div><b>${10+skillMod('perception','wis')}</b></div><div class="row"><div class="t">Darkvision</div><b>${C.sorc>=1?'120 ft':'60 ft'}</b></div></div>`;
- h+=`<div class="card"><h2>Proficiencies</h2><div class="meta" style="color:var(--text)"><b>Armor:</b> ${C.lock>=1?'Light, medium, shields':'None'}<br><b>Weapons:</b> ${C.lock>=1?'Simple and martial':'Daggers, darts, slings, quarterstaffs, light crossbows, longswords, shortswords, shortbows, longbows'}<br><b>Saves:</b> CON, CHA</div><label>Tools and other proficiencies</label><input data-bind="tools" value="${esc(S.tools)}"><label>Metamagic known</label><input data-bind="metamagic" value="${esc(S.metamagic)}" placeholder="Unlocks at Sorcerer 3"></div>`;
+ h+=`<div class="card"><h2>Proficiencies</h2><div class="meta" style="color:var(--text)"><b>Armor:</b> ${C.lock>=1?'Light, medium, shields':'None'}<br><b>Weapons:</b> ${C.lock>=1?'Simple and martial':'Daggers, darts, slings, quarterstaffs, light crossbows, longswords, shortswords, shortbows, longbows'}<br><b>Saves:</b> CON, CHA</div><label>Tools and other proficiencies</label><input data-bind="tools" value="${esc(S.tools)}"><label>Metamagic known</label><div class="meta" style="color:var(--text)">${S.metaKnown.length?esc(METAMAGIC.filter(m=>S.metaKnown.includes(m.id)).map(m=>m.name).join(', ')):'None'} (manage in the Features tab)</div></div>`;
  h+=`<div class="card"><h2>Notes</h2><textarea data-bind="notes">${esc(S.notes)}</textarea></div>`;
  h+=`<div class="card"><h2>Data</h2><p class="hint">Changes are saved automatically in this browser. Export a backup now and then.</p><div class="srow"><button class="btn gold" data-act="export">Export backup</button><button class="btn" data-act="import">Import backup</button><button class="btn danger" data-act="reset">Reset sheet</button></div></div>`;
  return h;
@@ -520,6 +543,17 @@ const ACT={
   body+='</div>';
   modal('Flexible Casting',body,[{label:'Close'}]);
   MODAL.flex=true;
+ },
+ pickMeta(){
+  const allowed=META_KNOWN(C.sorc);
+  const body=`<p class="hint">Choose up to ${allowed}.</p>`+METAMAGIC.map(m=>`<label style="display:block;color:var(--text);margin:6px 0"><span style="display:flex;gap:8px;align-items:center"><input type="checkbox" class="mm" value="${m.id}" ${S.metaKnown.includes(m.id)?'checked':''}><b>${esc(m.name)}</b> <span class="meta">(${m.cost==='X'?'X':m.cost} pt)</span></span><span class="meta" style="display:block;margin-left:26px">${esc(m.text)}</span></label>`).join('');
+  modal('Metamagic',body,[{label:'Cancel'},{label:'Save',cls:'gold',fn(){const v=[...document.querySelectorAll('.mm:checked')].map(x=>x.value);if(v.length>allowed){toast('You can know only '+allowed+' options');return false;}S.metaKnown=v;commit();}}]);},
+ useMeta(el){
+  const m=METAMAGIC.find(x=>x.id===el.dataset.id);if(!m)return;
+  const left=C.spMax-S.used.sp;
+  const spend=c=>{if(c>left){toast('Not enough sorcery points ('+left+' left)');return false;}S.used.sp+=c;toast(`${m.name}: ${c} sorcery point${c>1?'s':''} spent`);commit();};
+  if(m.cost==='X'){modal(esc(m.name),`<p class="hint">Sorcery points left: ${left}. Cost equals the spell’s level (1 for a cantrip).</p><label>Spell level</label><input type="number" id="m_x" min="1" max="9" value="1">`,[{label:'Cancel'},{label:'Spend',cls:'gold',fn(){return spend(Math.max(1,num(val('m_x'))));}}]);}
+  else modal(esc(m.name),`<p>Spend <b>${m.cost}</b> sorcery point${m.cost>1?'s':''}? (${left} left)</p>`,[{label:'Cancel'},{label:'Spend',cls:'gold',fn(){return spend(m.cost);}}]);
  },
  damage(){modal('Damage',`<label>Amount</label><input type="number" id="m_amt" min="0" value="" autofocus><label style="display:flex;gap:8px;align-items:center;color:var(--text)"><input type="checkbox" id="m_sp"> Radiant damage or a critical hit</label>`,[{label:'Cancel'},{label:'Apply',cls:'danger',fn(){const a=num(val('m_amt'));const sp=$('#m_sp').checked;if(a>0)applyDamage(a,sp);}}]);},
  heal(){modal('Heal',`<label>Amount</label><input type="number" id="m_amt" min="0" value=""><label>Temp HP (replaces the current value only if higher)</label><input type="number" id="m_tmp" min="0" value="">`,[{label:'Cancel'},{label:'Apply',cls:'gold',fn(){const a=num(val('m_amt'));const t=num(val('m_tmp'));if(a>0){if(S.hp===0){S.death={s:0,f:0};}S.hp=Math.min(C.maxHP,S.hp+a);}if(t>S.temp)S.temp=t;commit();}}]);},
